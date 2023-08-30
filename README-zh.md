@@ -41,6 +41,28 @@ go get "github.com/orcaman/concurrent-map/v2"
 
 ```
 
+## 示例 (手动控制锁)
+```go
+	// 创建一个新的 map.
+	m := cmap.New[string]()
+
+	m.Lock("foo")
+	// 此处的改动不会怕其他携程修改到 foo 的键值
+
+	// 设置变量m一个键为“foo”值为“bar”键值对
+	m.SetWithoutLock("foo", "bar")
+
+	// 从m中获取指定键值.
+	bar, ok := m.GetWithoutLock("foo")
+
+	// 最后要解锁
+	m.Unlock("foo")
+
+	// 删除键为“foo”的项
+	m.Remove("foo")
+
+```
+
 更多使用示例请查看`concurrent_map_test.go`.
 
 运行测试:

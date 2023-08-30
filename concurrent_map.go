@@ -368,3 +368,34 @@ func (m *ConcurrentMap[K, V]) UnmarshalJSON(b []byte) (err error) {
 	}
 	return nil
 }
+
+func (m ConcurrentMap[K, V]) Lock(key K) {
+	m.GetShard(key).Lock()
+}
+
+func (m ConcurrentMap[K, V]) RLock(key K) {
+	m.GetShard(key).RLock()
+}
+
+func (m ConcurrentMap[K, V]) Unlock(key K) {
+	m.GetShard(key).Unlock()
+}
+
+func (m ConcurrentMap[K, V]) RUnlock(key K) {
+	m.GetShard(key).RUnlock()
+}
+
+func (m ConcurrentMap[K, V]) SetWithoutLock(key K, value V) {
+	// Get map shard.
+	shard := m.GetShard(key)
+	shard.items[key] = value
+}
+
+// Get retrieves an element from map under given key.
+func (m ConcurrentMap[K, V]) GetWithoutLock(key K) (V, bool) {
+	// Get shard
+	shard := m.GetShard(key)
+	// Get item from shard.
+	val, ok := shard.items[key]
+	return val, ok
+}

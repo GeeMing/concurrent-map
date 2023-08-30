@@ -39,6 +39,30 @@ The package is now imported under the "cmap" namespace.
 
 ```
 
+## example (keep lock with context)
+```go
+	// Create a new map.
+	m := cmap.New[string]()
+
+	m.Lock("foo")
+	// do any stuff, other goroutine won't able to changing the key value
+
+	// Sets item within map, sets "bar" under key "foo"
+	m.SetWithoutLock("foo", "bar")
+
+	// Retrieve item from map.
+	bar, ok := m.GetWithoutLock("foo")
+
+	// release finally
+	m.Unlock("foo")
+
+	// Removes item under key "foo"
+	m.Remove("foo")
+
+```
+
+
+
 For more examples have a look at concurrent_map_test.go.
 
 Running tests:
